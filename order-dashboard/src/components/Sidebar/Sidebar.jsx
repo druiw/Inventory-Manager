@@ -1,5 +1,6 @@
 import React from "react";
-import "./Sidebar.css"; // Assuming you have a CSS file for styling
+import "./Sidebar.css";
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   return (
@@ -9,10 +10,19 @@ const Sidebar = () => {
         <br />
         Dashboard
       </h1>
-      <button className='sidebar-button'>Dashboard</button>
-      <button className='sidebar-button'>Orders</button>
-      <button className='sidebar-button'>Product</button>
-      <button className='sidebar-button'>Customers</button>
+
+      <Link to='/' className='sidebar-button'>
+        Dashboard
+      </Link>
+      <Link to='/orders' className='sidebar-button'>
+        Orders
+      </Link>
+      <Link to='/product' className='sidebar-button'>
+        Product
+      </Link>
+      <Link to='/customers' className='sidebar-button'>
+        Customers
+      </Link>
     </div>
   );
 };

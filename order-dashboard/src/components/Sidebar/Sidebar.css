@@ -25,6 +25,7 @@
   cursor: pointer;
   width: 100%;
   text-align: left;
+  text-decoration: none;
 }
 
 .sidebar-button:hover {
