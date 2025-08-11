@@ -1,26 +1,23 @@
-import React from "react";
-import { useEffect } from "react";
-import "./Main.css"; // Assuming you have a CSS file for styling
+import React, { useEffect, useState } from "react";
+import "./Main.css";
 import supabase from "../../supabaseClient";
 
 const Main = () => {
-  const [productName, setProductName] = React.useState("");
-  const [productId, setProductId] = React.useState("");
-  const [quantity, setQuantity] = React.useState("");
-  const [fetchError, setFetchError] = React.useState(null);
-  const [products, setProducts] = React.useState(null);
+  const [productName, setProductName] = useState("");
+  const [productId, setProductId] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [fetchError, setFetchError] = useState(null);
+  const [products, setProducts] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
       const { data, error } = await supabase.from("products").select();
-
       if (error) {
         setFetchError("Could not fetch products");
         setProducts(null);
         console.log(error);
-      }
-      if (data) {
-        setProducts(data);
+      } else {
+        setProducts(data || []);
         setFetchError(null);
       }
     };
@@ -33,24 +30,23 @@ const Main = () => {
       return;
     }
 
-    const { data, error } = await supabase.from("products").insert([
-      {
-        id: parseInt(productId),
-        name: productName,
-        quantity: parseInt(quantity),
-      },
-    ]);
+    const newItem = {
+      id: parseInt(productId, 10),
+      name: productName,
+      quantity: parseInt(quantity, 10),
+    };
+
+    const { data, error } = await supabase
+      .from("products")
+      .insert([newItem])
+      .select();
 
     if (error) {
       console.error("Error adding product:", error);
       alert("Failed to add stock");
     } else {
-      console.log("Product added:", data);
-      alert("Stock Added");
-      console.log(productName);
-      console.log(productId);
-      console.log(quantity);
-      console.log(supabase);
+      // optimistic: show immediately (use DB return if available)
+      setProducts((prev) => [...(prev ?? []), (data && data[0]) || newItem]);
       setProductName("");
       setProductId("");
       setQuantity("");
@@ -63,33 +59,38 @@ const Main = () => {
         <div className='top'>
           <div className='input-stock-container'>
             <h1>Add Products to Inventory</h1>
+
             <input
               className='input-box'
               type='text'
               placeholder='Product Name'
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
-            ></input>
+            />
+
             <input
               className='input-box'
               type='text'
               placeholder='Product id'
               value={productId}
               onChange={(e) => setProductId(e.target.value)}
-            ></input>
+            />
+
             <input
               className='input-box'
               type='text'
               placeholder='Quantity'
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-            ></input>
+            />
+
             <div className='add-container'>
               <button className='add-stock-button' onClick={handleAddStock}>
                 Add Product
               </button>
             </div>
           </div>
+
           <div className='left'>
             <h1></h1>
           </div>
@@ -100,29 +101,26 @@ const Main = () => {
 
           <div className='container'>
             <h1>Inventory</h1>
-            <div className='category-container'>
-              <div className='product-name'>
-                <h3>Product Name</h3>
-                {products &&
-                  products.map((product) => (
-                    <p key={product.id}>{product.name}</p>
-                  ))}
+
+            {/* NEW: grid-based, one row per product */}
+            <div className='inventory'>
+              <div className='inv header'>
+                <div>Product Name</div>
+                <div>Product ID</div>
+                <div>Quantity</div>
               </div>
-              <div className='product-name'>
-                <h3>Product Id</h3>
-                {products &&
-                  products.map((product) => (
-                    <p key={product.id}>{product.id}</p>
-                  ))}
-              </div>
-              <div className='product-name'>
-                <h3>Quantity</h3>
-                {products &&
-                  products.map((product) => (
-                    <p key={product.id}>{product.quantity}</p>
-                  ))}
-              </div>
+
+              {products?.map((p) => (
+                <div className='inv row' key={p.id}>
+                  <div className='cell name' title={p.name}>
+                    {p.name}
+                  </div>
+                  <div className='cell id'>{p.id}</div>
+                  <div className='cell qty'>{p.quantity}</div>
+                </div>
+              ))}
             </div>
+            {/* END NEW */}
           </div>
         </div>
       </div>

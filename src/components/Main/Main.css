@@ -1,6 +1,8 @@
 .main {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   padding: 50px;
   width: 100%;
   background-color: white;
@@ -81,4 +83,32 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+}
+
+.inventory {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr; /* narrower ID, more space to Quantity */
+  column-gap: 40px; /* extra gap between columns */
+  row-gap: 0;
+  align-items: center;
+}
+
+.inv.header {
+  font-weight: 600;
+  display: contents; /* keeps header aligned to same columns */
+}
+
+.inv.row {
+  display: contents; /* keeps all cells in same grid, prevents wrapping into separate “tables” */
+}
+
+.cell {
+  padding: 8px 12px;
+  border-bottom: none; /* remove divider */
+}
+
+.cell.name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
