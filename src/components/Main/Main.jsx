@@ -99,7 +99,7 @@ const Main = () => {
           {fetchError && <p>{fetchError}</p>}
 
           <div className='container'>
-            <h1>Inventory</h1>
+            <h1>Inventory in Supabase</h1>
 
             <div className='inventory'>
               <div className='inv header'>
