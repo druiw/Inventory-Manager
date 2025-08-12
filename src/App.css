@@ -1,0 +1,51 @@
+/* Layout shell */
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: #fff;
+}
+
+/* Sidebar lives at the left on desktop */
+.sidebar {
+  position: sticky;
+  top: 0;
+  flex: 0 0 280px; /* desktop width */
+  width: 280px;
+}
+
+/* Main fills remaining space */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 32px;
+}
+
+/* ↓ Tablet & down: stack, sidebar becomes a top bar */
+@media (max-width: 900px) {
+  .layout {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+    position: relative;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  .sidebar h1 {
+    font-size: 1.25rem;
+    line-height: 1.2;
+    margin: 0 8px 0 0;
+  }
+  .sidebar-button {
+    border-radius: 10px;
+    margin-left: 0;
+    width: auto;
+    white-space: nowrap;
+  }
+  .main-content {
+    padding: 20px;
+  }
+}

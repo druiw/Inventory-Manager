@@ -12,7 +12,7 @@ const Sidebar = () => {
       </h1>
 
       <Link to='/' className='sidebar-button'>
-        Dashboard
+        Add Stock
       </Link>
       <Link to='/orders' className='sidebar-button'>
         Orders

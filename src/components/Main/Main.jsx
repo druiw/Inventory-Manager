@@ -45,7 +45,6 @@ const Main = () => {
       console.error("Error adding product:", error);
       alert("Failed to add stock");
     } else {
-      // optimistic: show immediately (use DB return if available)
       setProducts((prev) => [...(prev ?? []), (data && data[0]) || newItem]);
       setProductName("");
       setProductId("");
@@ -102,7 +101,6 @@ const Main = () => {
           <div className='container'>
             <h1>Inventory</h1>
 
-            {/* NEW: grid-based, one row per product */}
             <div className='inventory'>
               <div className='inv header'>
                 <div>Product Name</div>
@@ -112,15 +110,22 @@ const Main = () => {
 
               {products?.map((p) => (
                 <div className='inv row' key={p.id}>
-                  <div className='cell name' title={p.name}>
+                  <div
+                    className='cell name'
+                    data-label='Product Name'
+                    title={p.name}
+                  >
                     {p.name}
                   </div>
-                  <div className='cell id'>{p.id}</div>
-                  <div className='cell qty'>{p.quantity}</div>
+                  <div className='cell id' data-label='Product ID'>
+                    {p.id}
+                  </div>
+                  <div className='cell qty' data-label='Quantity'>
+                    {p.quantity}
+                  </div>
                 </div>
               ))}
             </div>
-            {/* END NEW */}
           </div>
         </div>
       </div>
