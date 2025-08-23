@@ -1,3 +1,4 @@
+/* ====== Layout ====== */
 .main {
   display: flex;
   flex-direction: column;
@@ -12,6 +13,13 @@
   gap: 32px;
 }
 
+@media (max-width: 1100px) {
+  .top {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ====== Add Stock Card ====== */
 .input-stock-container {
   display: flex;
   flex-direction: column;
@@ -61,6 +69,7 @@
   cursor: pointer;
 }
 
+/* ====== Inventory Card ====== */
 .bottom {
   display: flex;
   flex-direction: column;
@@ -76,27 +85,26 @@
   box-sizing: border-box;
   padding: 24px;
   border-radius: 20px;
-  max-width: 100%;
+  max-width: 1100px;
+  margin-inline: auto;
 }
 
 .container h1 {
   color: #928af2;
 }
 
-/* Inventory: table-like on desktop */
+/* ====== Desktop/table view ====== */
 .inventory {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr minmax(220px, 1fr); /* Name | ID | Quantity */
   column-gap: 32px;
-  row-gap: 0;
   align-items: center;
 }
 
 .inv.header {
-  font-weight: 600;
   display: contents;
+  font-weight: 600;
 }
-
 .inv.row {
   display: contents;
 }
@@ -112,12 +120,65 @@
   text-overflow: ellipsis;
 }
 
-@media (max-width: 1100px) {
-  .top {
-    grid-template-columns: 1fr;
-  }
+.cell.qty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
 }
 
+.cell.qty span {
+  flex: 0 0 auto;
+}
+
+.cell.qty.editing input {
+  flex: 0 0 48px;
+  max-width: 48px;
+  text-align: center;
+}
+
+.cell.qty .btn-group {
+  margin-left: auto;
+  display: inline-flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cell.qty input {
+  flex: 0 0 64px;
+  padding: 4px 6px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* Buttons */
+.cell.qty button {
+  flex: 0 0 auto;
+  background-color: #a68bf0;
+  color: #fff;
+  border: 0;
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.05s ease;
+}
+.cell.qty button:hover {
+  background-color: #8a6de3;
+}
+.cell.qty button:active {
+  transform: translateY(1px);
+}
+.cell.qty button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ====== Mobile/card view ====== */
 @media (max-width: 700px) {
   .input-stock-container {
     max-width: 100%;
@@ -134,7 +195,7 @@
   }
 
   .inv.row {
-    display: grid;
+    display: grid; /* card grid only on mobile */
     grid-template-columns: 1fr 1fr;
     gap: 8px 16px;
     padding: 12px;
@@ -163,5 +224,12 @@
     overflow: visible;
     white-space: normal;
     text-overflow: clip;
+  }
+
+  .cell.qty {
+    gap: 6px;
+  }
+  .cell.qty input {
+    flex-basis: 56px;
   }
 }

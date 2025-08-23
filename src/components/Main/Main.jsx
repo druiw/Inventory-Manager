@@ -8,6 +8,8 @@ const Main = () => {
   const [quantity, setQuantity] = useState("");
   const [fetchError, setFetchError] = useState(null);
   const [products, setProducts] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+  const [draft, setDraft] = useState({ quantity: "" });
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -49,6 +51,43 @@ const Main = () => {
       setProductName("");
       setProductId("");
       setQuantity("");
+    }
+  };
+
+  const beginEdit = (p) => {
+    setEditingId(p.id);
+    setDraft({ quantity: String(p.quantity) });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setDraft({ quantity: "" });
+  };
+
+  const saveEdit = async (id) => {
+    const qty = parseInt(draft.quantity, 10);
+    if (Number.isNaN(qty)) return alert("Quantity must be a number");
+
+    const { error } = await supabase
+      .from("products")
+      .update({ quantity: qty })
+      .eq("id", id);
+
+    if (!error) {
+      setProducts((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, quantity: qty } : p))
+      );
+      cancelEdit();
+    } else {
+      alert("Failed to update");
+    }
+  };
+
+  const deleteRow = async (id) => {
+    if (!confirm("Delete this product?")) return;
+    const { error } = await supabase.from("products").delete().eq("id", id);
+    if (!error) {
+      setProducts((prev) => prev.filter((p) => p.id !== id));
     }
   };
 
@@ -120,8 +159,38 @@ const Main = () => {
                   <div className='cell id' data-label='Product ID'>
                     {p.id}
                   </div>
-                  <div className='cell qty' data-label='Quantity'>
-                    {p.quantity}
+
+                  <div
+                    className={`cell qty ${
+                      editingId === p.id ? "editing" : ""
+                    }`}
+                    data-label='Quantity'
+                  >
+                    {editingId === p.id ? (
+                      <>
+                        <input
+                          type='number'
+                          value={draft.quantity}
+                          onChange={(e) =>
+                            setDraft({ ...draft, quantity: e.target.value })
+                          }
+                        />
+                        <div className='btn-group'>
+                          <button onClick={() => saveEdit(p.id)}>Save</button>
+                          <button onClick={cancelEdit}>Cancel</button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <span>{p.quantity}</span>
+                        <div className='btn-group'>
+                          <button onClick={() => beginEdit(p)}>Edit</button>
+                          <button onClick={() => deleteRow(p.id)}>
+                            Delete
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               ))}
